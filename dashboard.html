@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — ResumeCraft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        /* ========== NEO-BRUTALISM OVERRIDE STYLES ========== */
+        
+         :root {
+            --primary-color: #ff006e;
+            --secondary-color: #a100f2;
+            --black: #000000;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --border-width: 2px;
+            --border-radius: 12px;
+            --shadow: 8px 8px 0px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 12px 12px 0px rgba(0, 0, 0, 0.3);
+            --accent: #ff006e;
+            --accent2: #ff6584;
+            --accent3: #a100f2;
+            --surface2: #f9f9f9;
+            --border: #e0e0e0;
+            --text-muted: #999999;
+        }
+        
+        body {
+            background-color: var(--white) !important;
+            color: var(--black) !important;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--black) !important;
+        }
+        
+        p,
+        a:not(.btn-primary-custom):not(.btn-outline-custom) {
+            color: var(--black) !important;
+        }
+        
+        .sidebar {
+            border-right: var(--border-width) solid var(--black);
+        }
+        
+        .sidebar-logo {
+            font-weight: 900;
+            border-bottom: var(--border-width) solid var(--black);
+            padding-bottom: 1.5rem;
+            color: var(--black) !important;
+        }
+        
+        .sidebar-nav a {
+            font-weight: 700;
+            transition: all 0.3s ease;
+            color: var(--black) !important;
+        }
+        
+        .sidebar-nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        .dash-card {
+            border: var(--border-width) solid var(--black);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            color: var(--black) !important;
+        }
+        
+        input,
+        textarea,
+        select {
+            background-color: var(--white) !important;
+            color: var(--black) !important;
+            border-color: var(--black) !important;
+        }
+        
+        input::placeholder,
+        textarea::placeholder {
+            color: #999 !important;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: var(--border-width) solid var(--black);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translate(-2px, -2px);
+        }
+        
+        .btn-outline-custom {
+            background-color: var(--white);
+            color: var(--black);
+            border: var(--border-width) solid var(--black);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--light-gray);
+            box-shadow: var(--shadow-hover);
+            transform: translate(-2px, -2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">Resume<span>Craft</span></div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+                <li><a href="builder.html"><i class="bi bi-plus-circle-fill"></i> New Resume</a></li>
+                <li><a href="resume-analyzer.html"><i class="bi bi-graph-up-arrow"></i> Resume Analyzer</a></li>
+                <li><a href="templates.html"><i class="bi bi-palette-fill"></i> Templates</a></li>
+            </ul>
+            <div class="sidebar-divider"></div>
+            <ul class="sidebar-nav">
+                <li><a href="#" onclick="handleLogout(event)"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            </ul>
+            <div style="position:absolute;bottom:1.5rem;left:1.5rem;right:1.5rem">
+                <div id="userInfo" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:0.9rem;display:flex;align-items:center;gap:0.75rem">
+                    <div id="userAvatar" style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0">?</div>
+                    <div style="overflow:hidden">
+                        <div id="userName" style="font-weight:700;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Loading...</div>
+                        <div id="userEmail" style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- Main -->
+        <div class="main-content">
+            <!-- Mobile header -->
+            <div class="mobile-header" style="background:linear-gradient(135deg, #ff006e 0%, #a100f2 100%);border-bottom:2px solid #000;box-shadow:4px 4px 0px rgba(0,0,0,0.2)">
+                <button class="hamburger" onclick="openSidebar()" style="color:#fff"><i class="bi bi-list" style="font-size:1.2rem;color:#fff"></i></button>
+                <div style="font-family:'Syne',sans-serif;font-weight:800;color:#fff">Resume<span style="color:#fff">Craft</span></div>
+                <a href="builder.html" class="btn-primary-custom" style="font-size:0.8rem;padding:0.45rem 1rem;background:#fff !important;color:#ff006e !important;border:2px solid #fff !important"><i class="bi bi-plus-lg"></i> New</a>
+            </div>
+
+            <div style="padding:2rem">
+                <!-- Header -->
+                <div class="page-header" data-aos="fade-down" style="background:linear-gradient(135deg, #ff006e 0%, #a100f2 100%);border:2px solid #000;border-radius:12px;padding:2.5rem !important;color:#fff;box-shadow:8px 8px 0px rgba(0,0,0,0.2)">
+                    <div>
+                        <h1 class="page-title" style="color:#fff !important">Welcome back, <span id="welcomeName" style="color:#fff">...</span> 👋</h1>
+                        <p class="page-subtitle" style="color:rgba(255,255,255,0.9) !important">Manage and build your professional resumes</p>
+                    </div>
+                    <a href="builder.html" class="btn-primary-custom" style="background:#fff !important;color:#ff006e !important;border:2px solid #fff !important"><i class="bi bi-plus-lg"></i> New Resume</a>
+                </div>
+
+                <!-- Stats -->
+                <div class="row gy-3 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-6 col-lg-3">
+                        <div class="feature-card text-center">
+                            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif;color:var(--accent)" id="totalCount">-</div>
+                            <div style="font-size:0.85rem;color:var(--text-muted)">Total Resumes</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="feature-card text-center">
+                            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif;color:var(--accent3)">10+</div>
+                            <div style="font-size:0.85rem;color:var(--text-muted)">Templates</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="feature-card text-center">
+                            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif;color:var(--accent2)">∞</div>
+                            <div style="font-size:0.85rem;color:var(--text-muted)">PDF Downloads</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="feature-card text-center">
+                            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif;color:#FFB800">Free</div>
+                            <div style="font-size:0.85rem;color:var(--text-muted)">Plan</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumes -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 style="font-size:1.2rem;font-weight:800">My Resumes</h2>
+                        <span id="resumeCount" class="badge-custom">Loading...</span>
+                    </div>
+
+                    <div id="loadingState" class="row gy-3">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div style="height:280px;border-radius:16px" class="skeleton"></div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div style="height:280px;border-radius:16px" class="skeleton"></div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div style="height:280px;border-radius:16px" class="skeleton"></div>
+                        </div>
+                    </div>
+
+                    <div id="emptyState" class="empty-state" style="display:none">
+                        <div class="empty-icon">📄</div>
+                        <div class="empty-title">No resumes yet</div>
+                        <p class="empty-desc">Create your first professional resume and start applying to jobs.</p>
+                        <a href="builder.html" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Create First Resume</a>
+                    </div>
+
+                    <div id="resumeGrid" class="resume-grid" style="display:none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:380px;width:90%;text-align:center">
+            <div style="font-size:2.5rem;margin-bottom:1rem">🗑️</div>
+            <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:0.5rem">Delete Resume?</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">This action cannot be undone.</p>
+            <div style="display:flex;gap:0.75rem;justify-content:center">
+                <button onclick="closeDeleteModal()" class="btn-outline-custom" style="padding:0.6rem 1.5rem">Cancel</button>
+                <button onclick="confirmDelete()" style="background:var(--accent2);color:#fff;border:none;padding:0.6rem 1.5rem;border-radius:50px;font-weight:700;cursor:pointer">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script type="module">
+
+        import { onAuthChange, logOut } from "./js/auth.js"; import { getUserResumes, deleteResume } from "./js/database.js"; AOS.init({ duration: 700, once: true }); let deleteTarget = null; let currentUser = null; /* ---------------- SIDEBAR ----------------
+        */ window.openSidebar = () => { document.getElementById("sidebar").classList.add("open"); document.getElementById("sidebarOverlay").classList.add("show"); }; window.closeSidebar = () => { document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("sidebarOverlay").classList.remove("show"); }; /* ---------------- LOGOUT ---------------- */ window.handleLogout = async (e) => { e.preventDefault(); await logOut(); window.location.href = "index.html"; }; /* ----------------
+        DELETE MODAL ---------------- */ window.openDelete = (id) => { deleteTarget = id; document.getElementById("deleteModal").style.display = "flex"; }; window.closeDeleteModal = () => { document.getElementById("deleteModal").style.display = "none";
+        deleteTarget = null; }; window.confirmDelete = async () => { if (!deleteTarget) return; try { await deleteResume(deleteTarget); showToast("Resume deleted successfully", "success"); document.getElementById("deleteModal").style.display = "none";
+        loadResumes(currentUser); } catch (err) { showToast("Failed to delete resume", "error"); } deleteTarget = null; }; /* ---------------- AUTH CHECK ---------------- */ onAuthChange(async (user) => { if (!user) { window.location.href = "login.html";
+        return; } currentUser = user; const name = user.displayName || user.email.split("@")[0]; document.getElementById("welcomeName").textContent = name; document.getElementById("userName").textContent = user.displayName || "User"; document.getElementById("userEmail").textContent
+        = user.email; document.getElementById("userAvatar").textContent = name.charAt(0).toUpperCase(); loadResumes(user); }); /* ---------------- LOAD RESUMES ---------------- */ async function loadResumes(user) { try { const resumes = await getUserResumes(user.uid);
+        document.getElementById("loadingState").style.display = "none"; document.getElementById("totalCount").textContent = resumes.length; document.getElementById("resumeCount").textContent = `${resumes.length} resume${resumes.length !== 1 ? "s" : ""}`;
+        if (resumes.length === 0) { document.getElementById("emptyState").style.display = "block"; return; } const grid = document.getElementById("resumeGrid"); grid.style.display = "grid"; grid.innerHTML = resumes.map(r => renderResumeCard(r)).join("");
+        } catch (err) { document.getElementById("loadingState").style.display = "none"; document.getElementById("resumeCount").textContent = "0 resumes"; document.getElementById("emptyState").style.display = "block"; } } /* ---------------- RESUME CARD
+        ---------------- */ function renderResumeCard(r) { const date = r.updatedAt ? new Date(r.updatedAt.seconds * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Recently"; const title = r.title || (r.personal?.name
+        ? `${r.personal.name}'s Resume` : "Untitled Resume"); const template = r.template || "template1"; return `
+        <div class="resume-card shine" data-aos="fade-up">
+
+            <div class="resume-card-thumb">
+
+                <i class="bi bi-file-text thumb-icon"></i>
+
+                <div class="resume-card-actions">
+
+                    <a href="preview.html?id=${r.id}" class="btn-primary-custom" style="font-size:0.82rem;padding:0.5rem 1rem">
+
+                        <i class="bi bi-eye"></i> View
+
+                    </a>
+
+                    <a href="builder.html?id=${r.id}" class="btn-outline-custom" style="font-size:0.82rem;padding:0.5rem 1rem">
+
+                        <i class="bi bi-pencil"></i> Edit
+
+                    </a>
+
+                    <button onclick="openDelete('${r.id}')" style="background:rgba(255,101,132,0.15);
+border:1px solid rgba(255,101,132,0.3);
+color:var(--accent2);
+padding:0.5rem;
+border-radius:10px;
+cursor:pointer">
+
+<i class="bi bi-trash"></i>
+
+</button>
+
+                </div>
+            </div>
+
+            <div class="resume-card-body">
+
+                <div class="resume-card-title">${escapeHtml(title)}</div>
+
+                <div class="resume-card-date">
+                    <i class="bi bi-clock me-1"></i>${date}
+                </div>
+
+                <div class="resume-card-template">
+                    <i class="bi bi-palette me-1"></i>${capitalize(template)}
+                </div>
+
+            </div>
+
+        </div>
+        `; } /* ---------------- UTILITIES ---------------- */ function escapeHtml(str) { const div = document.createElement("div"); div.textContent = str; return div.innerHTML; } function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1).replace(/[0-9]/g,
+        " $&"); } /* ---------------- TOAST MESSAGE ---------------- */ function showToast(message, type) { const container = document.getElementById("toastContainer"); const toast = document.createElement("div"); toast.className = `toast-item ${type}`;
+        toast.innerHTML = `
+        <span>${type === "success" ? "✅" : "❌"}</span>
+        <span>${message}</span> `; container.appendChild(toast); setTimeout(() => { toast.remove(); }, 3500); }
+
+    </script>
+</body>
+
+</html>

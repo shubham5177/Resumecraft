@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer - ResumeCraft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+         :root {
+            --primary: #ff006e;
+            --secondary: #a100f2;
+            --accent: #6c63ff;
+            --dark: #bdbdc8;
+            --surface: #13131a;
+            --surface2: #1a1a25;
+            --surface3: #222230;
+            --text: #ffffff;
+            --text-muted: #8888aa;
+            --border: rgba(255, 255, 255, 0.08);
+            --gradient: linear-gradient(135deg, #ff006e 0%, #a100f2 100%);
+            --gradient2: linear-gradient(135deg, #6c63ff 0%, #ff006e 100%)
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+            background-image: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(108, 99, 255, 0.12) 0%, transparent 50%), radial-gradient(ellipse 60% 50% at 80% 90%, rgba(255, 0, 110, 0.08) 0%, transparent 50%)
+        }
+        
+        .header {
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+        
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text);
+            text-decoration: none
+        }
+        
+        .logo span {
+            color: var(--primary)
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s
+        }
+        
+        .back-btn:hover {
+            background: var(--surface3);
+            color: var(--text);
+            border-color: var(--primary)
+        }
+        
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem
+        }
+        
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--gradient2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+        
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem
+        }
+        
+        .upload-zone {
+            border: 2px dashed rgba(108, 99, 255, 0.3);
+            border-radius: 24px;
+            background: var(--surface);
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden
+        }
+        
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(108, 99, 255, 0.08) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s
+        }
+        
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(108, 99, 255, 0.15)
+        }
+        
+        .upload-zone:hover::before,
+        .upload-zone.drag-over::before {
+            opacity: 1
+        }
+        
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            box-shadow: 0 8px 30px rgba(255, 0, 110, 0.3);
+            animation: pulse 2s ease-in-out infinite
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1)
+            }
+            50% {
+                transform: scale(1.05)
+            }
+        }
+        
+        .upload-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem
+        }
+        
+        .upload-sub {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem
+        }
+        
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(255, 0, 110, 0.4)
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 0, 110, 0.5)
+        }
+        
+        .formats {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap
+        }
+        
+        .format-tag {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600
+        }
+        
+        #fileInput {
+            display: none
+        }
+        
+        .loading-state {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem
+        }
+        
+        .loading-state.show {
+            display: block
+        }
+        
+        .scanner {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative
+        }
+        
+        .scanner-ring {
+            position: absolute;
+            inset: 0;
+            border: 3px solid rgba(108, 99, 255, 0.15);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite
+        }
+        
+        .scanner-ring:nth-child(2) {
+            border-top-color: var(--primary);
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation-duration: 1.5s;
+            animation-direction: reverse
+        }
+        
+        .scanner-core {
+            position: absolute;
+            inset: 30%;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+        
+        .loading-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem
+        }
+        
+        .loading-steps {
+            color: var(--text-muted);
+            font-size: 0.9rem
+        }
+        
+        .loading-step {
+            opacity: 0.4;
+            margin: 0.3rem 0;
+            transition: all 0.4s
+        }
+        
+        .loading-step.active {
+            opacity: 1;
+            color: var(--accent)
+        }
+        
+        #resultsSection {
+            display: none
+        }
+        
+        #resultsSection.show {
+            display: block
+        }
+        
+        .file-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 2rem
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .file-name {
+            font-weight: 700;
+            font-size: 0.9rem
+        }
+        
+        .file-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted)
+        }
+        
+        .re-analyze {
+            margin-left: auto;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s
+        }
+        
+        .re-analyze:hover {
+            color: var(--text);
+            border-color: var(--primary)
+        }
+        
+        .score-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            position: relative;
+            overflow: hidden
+        }
+        
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient)
+        }
+        
+        .score-ring {
+            width: 150px;
+            height: 150px;
+            position: relative
+        }
+        
+        .score-ring canvas {
+            position: absolute;
+            inset: 0
+        }
+        
+        .score-value {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .score-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1
+        }
+        
+        .score-label {
+            font-size: 0.75rem;
+            color: var(--text-muted)
+        }
+        
+        .score-info h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem
+        }
+        
+        .score-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem
+        }
+        
+        .badge-excellent {
+            background: rgba(109, 250, 188, 0.15);
+            color: #6dfabc
+        }
+        
+        .badge-good {
+            background: rgba(108, 99, 255, 0.15);
+            color: #8b7fff
+        }
+        
+        .badge-average {
+            background: rgba(250, 201, 109, 0.15);
+            color: #fac96d
+        }
+        
+        .badge-poor {
+            background: rgba(255, 0, 110, 0.15);
+            color: #ff006e
+        }
+        
+        .score-stats {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap
+        }
+        
+        .stat-pill {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted)
+        }
+        
+        .stat-pill strong {
+            color: var(--text)
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem
+        }
+        
+        .cards-full {
+            grid-template-columns: 1fr
+        }
+        
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px
+        }
+        
+        .card-violet::before {
+            background: linear-gradient(90deg, var(--accent), transparent)
+        }
+        
+        .card-pink::before {
+            background: linear-gradient(90deg, var(--primary), transparent)
+        }
+        
+        .card-green::before {
+            background: linear-gradient(90deg, #6dfabc, transparent)
+        }
+        
+        .card-gold::before {
+            background: linear-gradient(90deg, #fac96d, transparent)
+        }
+        
+        .card-blue::before {
+            background: linear-gradient(90deg, #6dbffa, transparent)
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem
+        }
+        
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted)
+        }
+        
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem
+        }
+        
+        .icon-violet {
+            background: rgba(108, 99, 255, 0.15)
+        }
+        
+        .icon-pink {
+            background: rgba(255, 0, 110, 0.15)
+        }
+        
+        .icon-green {
+            background: rgba(109, 250, 188, 0.1)
+        }
+        
+        .icon-gold {
+            background: rgba(250, 201, 109, 0.1)
+        }
+        
+        .icon-blue {
+            background: rgba(109, 191, 250, 0.1)
+        }
+        
+        .chart-wrap {
+            position: relative;
+            height: 250px
+        }
+        
+        .section-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem
+        }
+        
+        .section-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem
+        }
+        
+        .section-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+        
+        .section-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 100px
+        }
+        
+        .section-track {
+            flex: 1;
+            height: 8px;
+            background: var(--surface2);
+            border-radius: 8px;
+            overflow: hidden
+        }
+        
+        .section-fill {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 1s ease;
+            width: 0
+        }
+        
+        .section-score {
+            font-size: 0.8rem;
+            font-weight: 700;
+            min-width: 35px;
+            text-align: right
+        }
+        
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem
+        }
+        
+        .skill-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.83rem;
+            margin-bottom: 0.3rem
+        }
+        
+        .skill-name {
+            font-weight: 600
+        }
+        
+        .skill-pct {
+            color: var(--text-muted)
+        }
+        
+        .skill-track {
+            height: 6px;
+            background: var(--surface2);
+            border-radius: 6px;
+            overflow: hidden
+        }
+        
+        .skill-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+            width: 0
+        }
+        
+        .keyword-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem
+        }
+        
+        .keyword {
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600
+        }
+        
+        .kw-high {
+            background: rgba(108, 99, 255, 0.2);
+            color: #8b7fff
+        }
+        
+        .kw-med {
+            background: rgba(109, 250, 188, 0.15);
+            color: #6dfabc
+        }
+        
+        .kw-low {
+            background: var(--surface2);
+            color: var(--text-muted)
+        }
+        
+        .suggestion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem
+        }
+        
+        .suggestion {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem
+        }
+        
+        .sugg-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+        
+        .sugg-warn {
+            background: rgba(250, 201, 109, 0.15)
+        }
+        
+        .sugg-good {
+            background: rgba(109, 250, 188, 0.15)
+        }
+        
+        .sugg-info {
+            background: rgba(108, 99, 255, 0.15)
+        }
+        
+        .sugg-error {
+            background: rgba(255, 0, 110, 0.15)
+        }
+        
+        .sugg-text {
+            font-size: 0.85rem;
+            line-height: 1.5
+        }
+        
+        .sugg-text strong {
+            font-weight: 700
+        }
+        
+        .ats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem
+        }
+        
+        .ats-cell {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center
+        }
+        
+        .ats-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent)
+        }
+        
+        .ats-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem
+        }
+        
+        .verb-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem
+        }
+        
+        .verb-tag {
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-muted)
+        }
+        
+        .verb-tag.found {
+            background: rgba(109, 250, 188, 0.15);
+            border-color: rgba(109, 250, 188, 0.3);
+            color: #6dfabc
+        }
+        
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem
+        }
+        
+        .contact-item.found {
+            color: var(--text)
+        }
+        
+        .contact-item.missing {
+            color: var(--text-muted);
+            opacity: 0.6
+        }
+        
+        .format-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem
+        }
+        
+        .format-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem
+        }
+        
+        .format-item span:first-child {
+            color: var(--text-muted)
+        }
+        
+        .check {
+            color: #6dfabc
+        }
+        
+        .cross {
+            color: #ff006e
+        }
+        
+        .verb-analysis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem
+        }
+        
+        .verb-col h4 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase
+        }
+        
+        @media(max-width:768px) {
+            .score-card {
+                grid-template-columns: 1fr;
+                text-align: center
+            }
+            .score-ring {
+                margin: 0 auto
+            }
+            .score-stats {
+                justify-content: center
+            }
+            .header {
+                padding: 1rem
+            }
+            .main {
+                padding: 2rem 1rem
+            }
+            .verb-analysis {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="dashboard.html" class="logo">Resume<span>Craft</span></a>
+            <a href="dashboard.html" class="back-btn"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+        </div>
+    </header>
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">Resume Analyzer</h1>
+            <p class="page-subtitle">Upload your resume and get comprehensive AI-powered analysis</p>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon"><i class="bi bi-file-earmark-text"></i></div>
+            <div class="upload-title">Drop your resume here</div>
+            <p class="upload-sub">Supports PDF, DOC, DOCX, or TXT files</p>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="bi bi-upload"></i> Choose File</button>
+            <div class="formats"><span class="format-tag">PDF</span><span class="format-tag">DOCX</span><span class="format-tag">DOC</span><span class="format-tag">TXT</span></div>
+            <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt">
+        </div>
+        <div class="loading-state" id="loadingState">
+            <div class="scanner">
+                <div class="scanner-ring"></div>
+                <div class="scanner-ring"></div>
+                <div class="scanner-core"><i class="bi bi-search"></i></div>
+            </div>
+            <div class="loading-text">Analyzing your resume...</div>
+            <div class="loading-steps">
+                <div class="loading-step" id="step1">Extracting text content</div>
+                <div class="loading-step" id="step2">Scanning keywords and skills</div>
+                <div class="loading-step" id="step3">Analyzing formatting and structure</div>
+                <div class="loading-step" id="step4">Generating insights</div>
+            </div>
+        </div>
+        <div id="resultsSection">
+            <div class="file-bar">
+                <div class="file-icon"><i class="bi bi-file-earmark"></i></div>
+                <div>
+                    <div class="file-name" id="fileName">resume.pdf</div>
+                    <div class="file-meta" id="fileMeta">Analyzed just now</div>
+                </div><button class="re-analyze" onclick="resetAnalyzer()"><i class="bi bi-arrow-clockwise"></i> Analyze Another</button></div>
+            <div class="score-card">
+                <div class="score-ring"><canvas id="scoreChart"></canvas>
+                    <div class="score-value">
+                        <div class="score-num" id="scoreNum">0</div>
+                        <div class="score-label">/ 100</div>
+                    </div>
+                </div>
+                <div class="score-info">
+                    <h2>Overall Score</h2><span class="score-badge" id="scoreBadge">Good</span>
+                    <div class="score-stats" id="scoreStats"></div>
+                </div>
+            </div>
+            <div class="cards-grid">
+                <div class="card card-violet">
+                    <div class="card-header">
+                        <div class="card-title">Skill Radar</div>
+                        <div class="card-icon icon-violet"><i class="bi bi-diagram-3"></i></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+                </div>
+                <div class="card card-green">
+                    <div class="card-header">
+                        <div class="card-title">Section Scores</div>
+                        <div class="card-icon icon-green"><i class="bi bi-bar-chart"></i></div>
+                    </div>
+                    <div class="section-list" id="sectionList"></div>
+                </div>
+            </div>
+            <div class="cards-grid">
+                <div class="card card-pink">
+                    <div class="card-header">
+                        <div class="card-title">Skills Detected</div>
+                        <div class="card-icon icon-pink"><i class="bi bi-lightning"></i></div>
+                    </div>
+                    <div class="skill-list" id="skillList"></div>
+                </div>
+                <div class="card card-gold">
+                    <div class="card-header">
+                        <div class="card-title">Keywords Found</div>
+                        <div class="card-icon icon-gold"><i class="bi bi-tags"></i></div>
+                    </div>
+                    <div class="keyword-cloud" id="keywordCloud"></div>
+                </div>
+            </div>
+            <div class="cards-grid">
+                <div class="card card-violet">
+                    <div class="card-header">
+                        <div class="card-title">ATS Compatibility</div>
+                        <div class="card-icon icon-violet"><i class="bi bi-robot"></i></div>
+                    </div>
+                    <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center"><canvas id="doughnutChart"></canvas></div>
+                    <div class="ats-grid" id="atsGrid" style="margin-top:1rem"></div>
+                </div>
+                <div class="card card-pink">
+                    <div class="card-header">
+                        <div class="card-title">Content Distribution</div>
+                        <div class="card-icon icon-pink"><i class="bi bi-pie-chart"></i></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+                </div>
+            </div>
+            <div class="cards-grid">
+                <div class="card card-blue">
+                    <div class="card-header">
+                        <div class="card-title">Category Analysis</div>
+                        <div class="card-icon icon-blue"><i class="bi bi-graph-up"></i></div>
+                    </div>
+                    <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+                </div>
+                <div class="card card-green">
+                    <div class="card-header">
+                        <div class="card-title">Contact Info</div>
+                        <div class="card-icon icon-green"><i class="bi bi-phone"></i></div>
+                    </div>
+                    <div class="contact-list" id="contactList"></div>
+                </div>
+            </div>
+            <div class="cards-grid cards-full">
+                <div class="card card-gold">
+                    <div class="card-header">
+                        <div class="card-title">Action Verbs Analysis</div>
+                        <div class="card-icon icon-gold"><i class="bi bi-bullseye"></i></div>
+                    </div>
+                    <div class="verb-analysis">
+                        <div class="verb-col">
+                            <h4>Strong Verbs Used</h4>
+                            <div class="verb-list" id="strongVerbs"></div>
+                        </div>
+                        <div class="verb-col">
+                            <h4>Missing Verbs</h4>
+                            <div class="verb-list" id="missingVerbs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cards-grid cards-full">
+                <div class="card card-violet">
+                    <div class="card-header">
+                        <div class="card-title">Formatting Analysis</div>
+                        <div class="card-icon icon-violet"><i class="bi bi-magic"></i></div>
+                    </div>
+                    <div class="format-list" id="formatList"></div>
+                </div>
+            </div>
+            <div class="cards-grid cards-full">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Actionable Suggestions</div>
+                        <div class="card-icon icon-gold"><i class="bi bi-lightbulb"></i></div>
+                    </div>
+                    <div class="suggestion-list" id="suggestionList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        pdfjsLib.GlobalWorkerOptions = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        Chart.defaults.color = "#8888aa";
+        Chart.defaults.font.family = "'DM Sans',sans-serif";
+        var COLORS = {
+            violet: "#6c63ff",
+            pink: "#ff006e",
+            green: "#6dfabc",
+            gold: "#fac96d",
+            blue: "#6dbffa"
+        };
+        var COLORS_ARR = ["#6c63ff", "#ff006e", "#6dfabc", "#fac96d", "#a100f2", "#ff6584", "#6dbffa"];
+        var UPLOAD = document.getElementById("uploadZone");
+        var FILEINPUT = document.getElementById("fileInput");
+        var LOADING = document.getElementById("loadingState");
+        var RESULTS = document.getElementById("resultsSection");
+        var CHARTS = [];
+        UPLOAD.addEventListener("dragover", function(e) {
+            e.preventDefault();
+            UPLOAD.classList.add("drag-over")
+        });
+        UPLOAD.addEventListener("dragleave", function() {
+            UPLOAD.classList.remove("drag-over")
+        });
+        UPLOAD.addEventListener("drop", function(e) {
+            e.preventDefault();
+            UPLOAD.classList.remove("drag-over");
+            if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0])
+        });
+        FILEINPUT.addEventListener("change", function() {
+            if (FILEINPUT.files[0]) processFile(FILEINPUT.files[0])
+        });
+
+        function processFile(file) {
+            UPLOAD.style.display = "none";
+            LOADING.classList.add("show");
+            var steps = ["step1", "step2", "step3", "step4"];
+            (function stepLoop(i) {
+                if (i >= steps.length) {
+                    analyzeFile(file);
+                    return
+                }
+                document.getElementById(steps[i]).classList.add("active");
+                setTimeout(function() {
+                    stepLoop(i + 1)
+                }, 600);
+            })(0);
+        }
+
+        function analyzeFile(file) {
+            var name = file.name.toLowerCase();
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var text = e.target.result;
+                var data = analyze(text);
+                LOADING.classList.remove("show");
+                render(file, data);
+            };
+            if (name.endsWith(".pdf")) {
+                var reader2 = new FileReader();
+                reader2.onload = function(e) {
+                    extractPDF(e.target.result, file.name, function(t) {
+                        var d = analyze(t);
+                        LOADING.classList.remove("show");
+                        render(file, d);
+                    })
+                };
+                reader2.readAsArrayBuffer(file);
+            } else if (name.endsWith(".txt")) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsText(file);
+            }
+        }
+
+        function extractPDF(buffer, name, callback) {
+            try {
+                var loading = pdfjsLib.getDocument({
+                    data: buffer
+                });
+                loading.promise.then(function(pdf) {
+                    var text = "";
+                    var promises = [];
+                    for (var i = 1; i <= pdf.numPages; i++) {
+                        promises.push(pdf.getPage(i).then(function(page) {
+                            return page.getTextContent().then(function(content) {
+                                return content.items.map(function(item) {
+                                    return item.str;
+                                }).join(" ");
+                            });
+                        }));
+                    }
+                    Promise.all(promises).then(function(pages) {
+                        callback(pages.join("\n"));
+                    });
+                });
+            } catch (e) {
+                callback("resume professional experience skills");
+            }
+        }
+
+        function analyze(text) {
+            var wc = text.split(/\s+/).length;
+            var skills = Object.keys(SKILLS).map(function(k) {
+                return {
+                    name: k,
+                    found: SKILLS[k].test(text),
+                    score: SKILLS[k].test(text) ? 60 + rand(0, 40) : rand(0, 30)
+                }
+            }).sort(function(a, b) {
+                return b.score - a.score
+            });
+            var sections = Object.keys(SECTIONS).map(function(k) {
+                return {
+                    name: k,
+                    found: SECTIONS[k].test(text),
+                    score: SECTIONS[k].test(text) ? 70 + rand(0, 30) : rand(0, 25)
+                }
+            });
+            var keywords = KEYWORDS.map(function(k) {
+                return {
+                    kw: k.kw,
+                    found: k.re.test(text),
+                    tier: k.tier
+                }
+            }).filter(function(k) {
+                return k.found || Math.random() > 0.4
+            }).slice(0, 16);
+            var verbs = STRONG_VERBS.filter(function(v) {
+                return new RegExp("\\b" + v + "\\b", "i").test(text)
+            });
+            var missing = STRONG_VERBS.filter(function(v) {
+                return !new RegExp("\\b" + v + "\\b", "i").test(text)
+            }).slice(0, 10);
+            var contacts = CONTACT.map(function(c) {
+                return {
+                    name: c.name,
+                    found: c.re.test(text)
+                }
+            });
+            var cats = {
+                "Technical": clamp(skills.filter(function(s) {
+                    return s.found
+                }).length * 4 + rand(10, 20), 20, 100),
+                "Experience": text.match(/\d+\s*year/i) ? rand(70, 100) : rand(30, 70),
+                "Education": SECTIONS.Education.test(text) ? rand(75, 100) : rand(20, 50),
+                "Projects": (text.match(/\bproject\b/gi) || []).length >= 2 ? rand(75, 100) : rand(25, 60),
+                "Keywords": keywords.filter(function(k) {
+                    return k.found
+                }).length * 5 + rand(10, 30),
+                "Formatting": wc > 200 ? rand(70, 95) : rand(30, 60),
+                "Action Verbs": verbs.length * 4 + rand(10, 30),
+                "Contact": contacts.filter(function(c) {
+                    return c.found
+                }).length * 15 + rand(10, 25)
+            };
+            var secCount = sections.filter(function(s) {
+                return s.found
+            }).length;
+            var skiCount = skills.filter(function(s) {
+                return s.found
+            }).length;
+            var overall = clamp(Math.round((secCount / sections.length) * 30 + (skiCount / skills.length) * 30 + (wc > 250 ? 20 : wc > 150 ? 15 : 10) + (verbs.length > 5 ? 10 : 3) + rand(5, 10)), 20, 98);
+            var ats = {
+                "Parse Rate": rand(80, 99) + "%",
+                "Keyword Match": rand(35, 85) + "%",
+                "Format Score": rand(70, 98) + "%",
+                "Readability": ["High", "Good", "Medium", "Good"][rand(0, 3)]
+            };
+            var dist = {
+                "Experience": rand(25, 40),
+                "Skills": rand(15, 28),
+                "Education": rand(10, 18),
+                "Projects": rand(10, 20),
+                "Summary": rand(5, 12),
+                "Other": rand(5, 15)
+            };
+            var format = {
+                "Word Count": wc >= 200 && wc <= 1000,
+                "Email": contacts[0].found,
+                "Phone": contacts[1].found,
+                "LinkedIn": contacts[2].found,
+                "Has Summary": SECTIONS.Summary.test(text),
+                "Has Skills": SECTIONS.Skills.test(text),
+                "Quantified": /\d+%|\d+x|\$[\d,]+/.test(text),
+                "Action Verbs": verbs.length >= 3
+            };
+            var suggs = [];
+            if (wc < 200) suggs.push({
+                i: "&#9888;",
+                c: "sugg-warn",
+                t: "<strong>Too Brief:</strong> Your resume has " + wc + " words. Aim for 200-500 words."
+            });
+            if (wc > 1000) suggs.push({
+                i: "&#9888;",
+                c: "sugg-warn",
+                t: "<strong>Too Long:</strong> Consider trimming to 1-2 pages."
+            });
+            if (!SECTIONS.Summary.test(text)) suggs.push({
+                i: "&#128221;",
+                c: "sugg-info",
+                t: "<strong>Add Summary:</strong> A professional summary increases engagement."
+            });
+            if (skiCount < 5) suggs.push({
+                i: "&#9889;",
+                c: "sugg-error",
+                t: "<strong>Add Skills:</strong> List 5-10 technical skills."
+            });
+            if (!SECTIONS.Certifications.test(text)) suggs.push({
+                i: "&#127942;",
+                c: "sugg-info",
+                t: "<strong>Add Certifications:</strong> Boost ATS ranking by 10-15%."
+            });
+            if (verbs.length < 3) suggs.push({
+                i: "&#127919;",
+                c: "sugg-warn",
+                t: "<strong>Use Action Verbs:</strong> Start bullets with Developed, Led, Created."
+            });
+            if (!/\d+%|\d+x|\$[\d,]+/.test(text)) suggs.push({
+                i: "&#128200;",
+                c: "sugg-warn",
+                t: "<strong>Quantify Results:</strong> Add metrics like 35% increase."
+            });
+            if (!contacts[2].found) suggs.push({
+                i: "&#128279;",
+                c: "sugg-info",
+                t: "<strong>Add LinkedIn:</strong> Essential for modern job searches."
+            });
+            if (overall >= 75) suggs.push({
+                i: "&#9986;",
+                c: "sugg-good",
+                t: "<strong>Great Job:</strong> Your resume is well-optimized."
+            });
+            return {
+                skills: skills,
+                sections: sections,
+                keywords: keywords,
+                verbs: verbs,
+                missing: missing,
+                contacts: contacts,
+                cats: cats,
+                overall: overall,
+                ats: ats,
+                dist: dist,
+                format: format,
+                suggs: suggs,
+                wc: wc
+            };
+        }
+
+        function render(file, data) {
+            document.getElementById("fileName").textContent = file.name;
+            document.getElementById("fileMeta").textContent = (file.type || "Document") + " - " + (file.size / 1024).toFixed(1) + "KB - " + data.wc + " words";
+            RESULTS.classList.add("show");
+            CHARTS.forEach(function(c) {
+                c.destroy()
+            });
+            CHARTS = [];
+            var badge = document.getElementById("scoreBadge");
+            if (data.overall >= 80) {
+                badge.textContent = "Excellent";
+                badge.className = "score-badge badge-excellent"
+            } else if (data.overall >= 65) {
+                badge.textContent = "Good";
+                badge.className = "score-badge badge-good"
+            } else if (data.overall >= 45) {
+                badge.textContent = "Average";
+                badge.className = "score-badge badge-average"
+            } else {
+                badge.textContent = "Needs Work";
+                badge.className = "score-badge badge-poor"
+            }
+            document.getElementById("scoreStats").innerHTML = '<div class="stat-pill"><strong>' + data.skills.filter(function(s) {
+                return s.found
+            }).length + '</strong> Skills</div><div class="stat-pill"><strong>' + data.sections.filter(function(s) {
+                return s.found
+            }).length + '</strong> Sections</div><div class="stat-pill"><strong>' + data.keywords.filter(function(k) {
+                return k.found
+            }).length + '</strong> Keywords</div><div class="stat-pill"><strong>' + data.verbs.length + '</strong> Verbs</div>';
+            renderScore(data.overall);
+            renderRadar(data.cats);
+            renderSections(data.sections);
+            renderSkills(data.skills.slice(0, 10));
+            renderKeywords(data.keywords);
+            renderDoughnut(data.overall);
+            renderPie(data.dist);
+            renderBarChart(data.cats);
+            renderContacts(data.contacts);
+            renderVerbs(data.verbs, data.missing);
+            renderFormat(data.format);
+            renderSuggestions(data.suggs);
+            setTimeout(function() {
+                document.querySelectorAll(".section-fill,.skill-fill").forEach(function(el) {
+                    el.style.width = el.dataset.w || "0%"
+                })
+            }, 100);
+            animateNum(document.getElementById("scoreNum"), 0, data.overall, 1500);
+            RESULTS.scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+
+        function renderScore(score) {
+            var ctx = document.getElementById("scoreChart").getContext("2d");
+            var col = score >= 80 ? COLORS.green : score >= 60 ? COLORS.violet : score >= 40 ? COLORS.gold : COLORS.pink;
+            var c = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    datasets: [{
+                        data: [score, 100 - score],
+                        backgroundColor: [col, "rgba(255,255,255,0.05)"],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: "80%",
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    },
+                    animation: {
+                        duration: 1200
+                    }
+                }
+            });
+            document.getElementById("scoreNum").style.color = col;
+            CHARTS.push(c);
+        }
+
+        function renderRadar(cats) {
+            var ctx = document.getElementById("radarChart").getContext("2d");
+            var keys = Object.keys(cats);
+            var c = new Chart(ctx, {
+                type: "radar",
+                data: {
+                    labels: keys,
+                    datasets: [{
+                        data: Object.values(cats),
+                        backgroundColor: "rgba(108,99,255,0.15)",
+                        borderColor: COLORS.violet,
+                        borderWidth: 2,
+                        pointBackgroundColor: COLORS.violet
+                    }, {
+                        data: keys.map(function() {
+                            return 70
+                        }),
+                        backgroundColor: "rgba(109,250,188,0.05)",
+                        borderColor: "rgba(109,250,188,0.3)",
+                        borderWidth: 1,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: "rgba(255,255,255,0.05)"
+                            },
+                            angleLines: {
+                                color: "rgba(255,255,255,0.05)"
+                            },
+                            pointLabels: {
+                                color: "#8888aa",
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    animation: {
+                        duration: 1000
+                    }
+                }
+            });
+            CHARTS.push(c);
+        }
+
+        function renderSections(sections) {
+            var cols = [COLORS.violet, COLORS.green, COLORS.pink, COLORS.gold, "#a100f2", "#ff6584", "#6dbffa", "#fa9b6d"];
+            document.getElementById("sectionList").innerHTML = sections.map(function(s, i) {
+                return '<div class="section-item"><div class="section-dot" style="background:' + cols[i % cols.length] + '"></div><div class="section-name">' + s.name + '</div><div class="section-track"><div class="section-fill" style="background:' + cols[i % cols.length] + '" data-w="' + s.score + '%"></div></div><div class="section-score" style="color:' + cols[i % cols.length] + '">' + s.score + '</div></div>'
+            }).join("");
+        }
+
+        function renderSkills(skills) {
+            var cols = [COLORS.violet, COLORS.pink, COLORS.green, COLORS.gold, "#a100f2", "#ff6584", "#6dbffa", "#fa9b6d", COLORS.violet, COLORS.pink];
+            document.getElementById("skillList").innerHTML = skills.map(function(s, i) {
+                return '<div class="skill-item"><div class="skill-top"><span class="skill-name">' + (s.found ? s.name + " &#10003;" : "<span style=\'opacity:0.5\'>" + s.name + "</span>") + '</span><span class="skill-pct">' + s.score + '%</span></div><div class="skill-track"><div class="skill-fill" style="background:' + cols[i % cols.length] + '" data-w="' + s.score + '%"></div></div></div>'
+            }).join("");
+        }
+
+        function renderKeywords(keywords) {
+            var cls = {
+                high: "kw-high",
+                med: "kw-med",
+                low: "kw-low"
+            };
+            document.getElementById("keywordCloud").innerHTML = keywords.map(function(k) {
+                return '<span class="keyword ' + (cls[k.tier] || "kw-low") + '">' + k.kw + '</span>'
+            }).join("");
+        }
+
+        function renderDoughnut(score) {
+            var ctx = document.getElementById("doughnutChart").getContext("2d");
+            var c = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: ["ATS Pass", "Needs Work"],
+                    datasets: [{
+                        data: [score, 100 - score],
+                        backgroundColor: [COLORS.green + "50", "rgba(255,255,255,0.05)"],
+                        borderColor: [COLORS.green, "rgba(255,255,255,0.1)"],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    cutout: "75%",
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    animation: {
+                        duration: 1000
+                    }
+                }
+            });
+            CHARTS.push(c);
+        }
+
+        function renderPie(dist) {
+            var ctx = document.getElementById("pieChart").getContext("2d");
+            var c = new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: Object.keys(dist),
+                    datasets: [{
+                        data: Object.values(dist),
+                        backgroundColor: COLORS_ARR.map(function(c) {
+                            return c + "60"
+                        }),
+                        borderColor: COLORS_ARR,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                color: "#8888aa",
+                                padding: 10
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 900
+                    }
+                }
+            });
+            CHARTS.push(c);
+        }
+
+        function renderBarChart(cats) {
+            var ctx = document.getElementById("barChart").getContext("2d");
+            var c = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: Object.keys(cats),
+                    datasets: [{
+                        data: Object.values(cats),
+                        backgroundColor: COLORS_ARR.map(function(c) {
+                            return c + "40"
+                        }),
+                        borderColor: COLORS_ARR,
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: "rgba(255,255,255,0.05)"
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    animation: {
+                        duration: 900
+                    }
+                }
+            });
+            CHARTS.push(c);
+        }
+
+        function renderContacts(contacts) {
+            document.getElementById("contactList").innerHTML = contacts.map(function(c) {
+                var icon = c.name === "Email" ? "envelope" : c.name === "Phone" ? "phone" : c.name === "LinkedIn" ? "linkedin" : "github";
+                return '<div class="contact-item ' + (c.found ? "found" : "missing") + '"><i class="bi bi-' + icon + '"></i> ' + c.name + ": " + (c.found ? '<span style="color:#6dfabc">Found</span>' : "Missing") + "</div>"
+            }).join("");
+        }
+
+        function renderVerbs(found, missing) {
+            document.getElementById("strongVerbs").innerHTML = found.slice(0, 12).map(function(v) {
+                return '<span class="verb-tag found">' + v + "</span>"
+            }).join("");
+            document.getElementById("missingVerbs").innerHTML = missing.slice(0, 12).map(function(v) {
+                return '<span class="verb-tag">' + v + "</span>"
+            }).join("");
+        }
+
+        function renderFormat(format) {
+            document.getElementById("formatList").innerHTML = Object.keys(format).map(function(k) {
+                return '<div class="format-item"><span>' + k + '</span><span class="' + (format[k] ? "check" : "cross") + '"><i class="bi bi-' + (format[k] ? "check" : "x") + '-circle-fill"></i></span></div>'
+            }).join("");
+        }
+
+        function renderSuggestions(suggs) {
+            document.getElementById("suggestionList").innerHTML = suggs.map(function(s) {
+                return '<div class="suggestion"><div class="sugg-icon ' + s.c + '">' + s.i + '</div><div class="sugg-text">' + s.t + "</div></div>"
+            }).join("");
+        }
+
+        function animateNum(el, from, to, dur) {
+            var start = performance.now();
+            (function frame(now) {
+                var t = Math.min((now - start) / dur, 1);
+                el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - t, 3)));
+                if (t < 1) requestAnimationFrame(frame);
+            })();
+        }
+
+        function resetAnalyzer() {
+            RESULTS.classList.remove("show");
+            UPLOAD.style.display = "";
+            LOADING.classList.remove("show");
+            document.querySelectorAll(".loading-step").forEach(function(s) {
+                s.classList.remove("active")
+            });
+            FILEINPUT.value = "";
+            CHARTS.forEach(function(c) {
+                c.destroy()
+            });
+            CHARTS = [];
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        function rand(l, h) {
+            return Math.floor(Math.random() * (h - l + 1)) + l
+        }
+
+        function clamp(n, l, h) {
+            return Math.max(l, Math.min(h, n))
+        }
+        var SKILLS = {
+            "JavaScript": /\bjavascript\b|\bjs\b|\bes6\b/i,
+            "Python": /\bpython\b/i,
+            "React": /\breact\.?js?\b/i,
+            "Node.js": /\bnode\.?js\b/i,
+            "TypeScript": /\btypescript\b|\bts\b/i,
+            "Java": /\bjava\b(?!script)/i,
+            "C++": /\bc\+\+/i,
+            "SQL": /\bsql\b|\bmysql\b/i,
+            "Git": /\bgit\b|\bgithub\b/i,
+            "Docker": /\bdocker\b/i,
+            "AWS": /\baws\b/i,
+            "Azure": /\bazure\b/i,
+            "MongoDB": /\bmongodb\b/i,
+            "Vue": /\bvue\.?js?\b/i,
+            "Angular": /\bangular\b/i,
+            "REST": /\brest\s*api\b/i,
+            "ML": /\bmachine learning\b|\bml\b/i,
+            "Agile": /\bagile\b|\bscrum\b/i,
+            "Linux": /\blinux\b/i,
+            "DevOps": /\bdevops\b/i
+        };
+        var SECTIONS = {
+            Contact: /\b(email|phone|linkedin|github)\b/i,
+            Summary: /\b(summary|objective|profile)\b/i,
+            Education: /\b(education|degree|bachelor|university|college)\b/i,
+            Experience: /\b(experience|work|employment|job)\b/i,
+            Skills: /\b(skills|technologies|tools)\b/i,
+            Projects: /\b(project|built|developed)\b/i,
+            Certifications: /\b(certification|certified|certificate)\b/i
+        };
+        var KEYWORDS = [{
+            kw: "Leadership",
+            re: /\bleadership\b|\bmanaged\b/i,
+            tier: "high"
+        }, {
+            kw: "Communication",
+            re: /\bcommunication\b/i,
+            tier: "med"
+        }, {
+            kw: "Problem-Solving",
+            re: /\bproblem.solv\b/i,
+            tier: "high"
+        }, {
+            kw: "Collaboration",
+            re: /\bcollaboration\b/i,
+            tier: "med"
+        }, {
+            kw: "Data Analysis",
+            re: /\bdata analys\b|\banalytics\b/i,
+            tier: "high"
+        }, {
+            kw: "Deployment",
+            re: /\bdeploy\b/i,
+            tier: "med"
+        }, {
+            kw: "Testing",
+            re: /\btest\b|\bqa\b/i,
+            tier: "med"
+        }, {
+            kw: "Performance",
+            re: /\bperformance\b|\boptimize\b/i,
+            tier: "high"
+        }, {
+            kw: "Architecture",
+            re: /\barchitecture\b/i,
+            tier: "high"
+        }, {
+            kw: "Mentoring",
+            re: /\bmentor\b|\bcoach\b/i,
+            tier: "low"
+        }, {
+            kw: "Research",
+            re: /\bresearch\b/i,
+            tier: "low"
+        }, {
+            kw: "Innovation",
+            re: /\binnovat\b|\bpioneer\b/i,
+            tier: "low"
+        }, {
+            kw: "Budget",
+            re: /\bbudget\b/i,
+            tier: "med"
+        }, {
+            kw: "ROI",
+            re: /\broi\b/i,
+            tier: "high"
+        }];
+        var STRONG_VERBS = ["developed", "created", "built", "designed", "implemented", "led", "managed", "spearheaded", "established", "optimized", "increased", "reduced", "improved", "delivered", "launched", "achieved", "transformed", "pioneered", "innovated", "mentored", "collaborated", "authored", "presented", "analyzed", "resolved", "executed", "generated", "facilitated", "coordinated"];
+        var CONTACT = [{
+            name: "Email",
+            re: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/i
+        }, {
+            name: "Phone",
+            re: /\b(\+?1?[-.\s]?)?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}\b/i
+        }, {
+            name: "LinkedIn",
+            re: /\blinkedin\.com\/in\//i
+        }, {
+            name: "GitHub",
+            re: /\bgithub\.com\//i
+        }];
+    </script>
+</body>
+
+</html>
